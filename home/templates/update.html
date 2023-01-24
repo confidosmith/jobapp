@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block header %} {% include "header.html" %} {% endblock header %}
+{% load static %}
+{% block content %}
+<section class="joblist-sec">
+    <div class="container job-signup">
+        <h2 class="text-center mb-4">Update Profile</h2>
+        <form action="{% url 'update' %}" method="POST">
+          {% csrf_token %} 
+          {% include "message.html" %}
+            <div class="form-group">
+              <label for="exampleInputText1">First Name</label>
+              <input type="text" name="first_name" value="{{profile.first_name}}" class="form-control" id="exampleInputText1" aria-describedby="textHelp">
+            </div>
+            <div class="form-group">
+              <label for="exampleInputText1">Last Name</label>
+              <input type="text" name="last_name" value="{{profile.last_name}}" class="form-control" id="exampleInputText1" aria-describedby="textHelp">
+            </div>
+            <div class="form-group">
+              <label for="exampleInputText1">Email</label>
+              <input type="email" name="email" value="{{profile.email}}" class="form-control" id="exampleInputText1" aria-describedby="textHelp">
+              <input type="hidden" name="phone" class="form-control" id="exampleInputText1" aria-describedby="textHelp">
+            </div>
+            <div class="form-group">
+              <label for="exampleInputText1">Phone</label>
+              <input type="text" name="phone" value="{{profile.phone}}" class="form-control" id="exampleInputText1" aria-describedby="textHelp">
+            </div>
+            <!-- <div class="form-check form-check-inline">
+              <input name="gender" class="form-check-input" type="radio" name="male">
+              <label class="form-check-label" for="inlineRadio1">Male</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input name="gender" class="form-check-input" type="radio" name="Female">
+              <label class="form-check-label" for="inlineRadio2">Female</label>
+            </div> -->
+            <div>
+              <button type="submit" class="btn mt-4">Update</button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock content %}
+{% block footer %} {% include "footer.html" %} {% endblock footer %}

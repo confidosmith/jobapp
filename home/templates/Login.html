@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block content %}
+<!-- header -->
+<section class="job-head">
+  <div class="container home-section">
+    <div class="row">
+        <div class="col-md-7">
+            <h1 class="text-white font-weight-bold">Login</h1>
+            <div class="custom-breadcrumbs">
+            <a href="{% url 'home' %}">Home</a> <span class="mx-2 slash">/</span> 
+            <span class="text-white"><strong>login</strong></span>
+            </div>
+        </div>
+    </div>
+  </div>
+ 
+  <nav class="navbar navbar-expand-lg navbar-light">
+      <a class="navbar-brand text-white" href="{% url 'home' %}">confidojobs</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav" >
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'home' %}">home<span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'job_listing' %}">job listing</a>
+          </li>
+          {% if user.is_authenticated and user.is_staff %}
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'post_job' %}"><span class="post-job"><i class="fa-solid fa-plus"></i> post job</span></a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              profile
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="{% url 'employer_dashboard' %}">dashboard</a> 
+              <a class="dropdown-item" href="{% url 'update' %}">edit profile</a>
+            </div>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'signout' %}">logout</a>
+          </li>
+          {% elif user.is_authenticated %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              profile
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="{% url 'employee_dashboard' %}">dashboard</a> 
+              <a class="dropdown-item" href="{% url 'update' %}">edit profile</a> 
+            </div>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'signout' %}">logout</a>
+          </li>
+          {% else %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              register
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="{% url 'employer_signup' %}">employer</a> 
+              <a class="dropdown-item" href="{% url 'employee_signup' %}">employee</a> 
+            </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'signin' %}">login</a> 
+        </li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+</section>
+{% include "message.html" %}
+<!-- header done -->
+
+<section class="joblist-sec">
+    <div class="container job-signup">
+        <h2 class="text-center mb-4"><i class='bx bxs-lock-alt'></i>Login to confidojobs</h2>
+        <form action="{% url 'signin' %}" method="POST">
+          {% csrf_token %} 
+            <div class="form-group">
+              <label for="exampleInputText1">Username/Company Name</label>
+              <input name="username" type="text" class="form-control" id="exampleInputText1" aria-describedby="textHelp">
+            </div>
+            <!-- <div class="form-group">
+              <label for="exampleInputEmail1">Email</label>
+              <input name="email" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+            </div> -->
+            <div class="form-group">
+              <label for="exampleInputPassword1">Password</label>
+              <input name="password" type="password" class="form-control" id="exampleInputPassword1">
+            </div>
+            <button type="submit" class="btn btnsign">Sign In</button>
+            <p class="mt-3">Don't have an account?</p>
+            <span class="notyet"><a href="{% url 'employer_signup' %}">Register as an Employer</a></span> or 
+            <span class="notyet"><a href="{% url 'employee_signup' %}">Register as an Employee</a></span> 
+        </form>
+    </div>
+</section>
+{% endblock content %}
+{% block footer %} {% include "footer.html" %} {% endblock footer %}

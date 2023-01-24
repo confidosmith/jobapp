@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<!-- header -->
+<section class="job-head">
+  <div class="container home-section">
+          <div class="row">
+              <div class="col-md-7">
+                  <h1 class="text-white font-weight-bold">Jobs</h1>
+                  <div class="custom-breadcrumbs">
+                  <a href="{% url 'home' %}">Home</a> <span class="mx-2 slash">/</span> 
+                  <span class="text-white"><strong>All Jobs</strong></span>
+                  </div>
+              </div>
+          </div>
+    </div>
+  <nav class="navbar navbar-expand-lg navbar-light">
+      <a class="navbar-brand text-white" href="{% url 'home' %}">confidojobs</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav" >
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'home' %}">home<span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'job_listing' %}">job listing</a>
+          </li>
+          {% if user.is_authenticated and user.is_staff %}
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'post_job' %}"><span class="post-job"><i class="fa-solid fa-plus"></i> post job</span></a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              profile
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="{% url 'employer_dashboard' %}">dashboard</a> 
+              <a class="dropdown-item" href="{% url 'update' %}">edit profile</a>
+            </div>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'signout' %}">logout</a>
+          </li>
+          {% elif user.is_authenticated %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              profile
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="{% url 'employee_dashboard' %}">dashboard</a> 
+              <a class="dropdown-item" href="{% url 'update' %}">edit profile</a> 
+            </div>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'signout' %}">logout</a>
+          </li>
+          {% else %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              register
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="{% url 'employer_signup' %}">employer</a> 
+              <a class="dropdown-item" href="{% url 'employee_signup' %}">employee</a> 
+            </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'signin' %}">login</a> 
+        </li>
+          {% endif %}
+        </ul>
+      </div>
+    </nav>
+</section>
+<!-- header done -->
+{% include "message.html" %}
+        <section class="job-list" id="jobs">
+          {% if paginate %}
+          {% for item in paginate %}
+          <a href="{% url 'job_detail' item.id %}">
+            <div class="job-card">
+              <div class="job-name">
+                <img src="{{item.logo.url}}" alt="" class="job-profile">
+                <div class="job-detail">
+                  <h4>{{item.employer}}</h4>
+                  <h3>{{item.job_title}}</h3>
+                  <p></p>
+                </div>
+              </div>
+              <div class="job-label">
+                <a href="" class="label-a">HTML</a>
+                <a href="" class="label-b">CSS</a>
+                <a href="" class="label-c">Javascript</a>
+              </div>
+              <div class="job-posted">
+                posted 2 min ago
+              </div>
+            </div>
+          </a>
+        {% endfor %}
+        {% endif %}
+    </div>
+  </div>
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+      {% if paginate.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{paginate.previous_page_number}}" tabindex="-1" aria-disabled="true">Previous</a>
+        </li>
+      {% else %}
+        <li class="page-item">
+          <a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">Previous</a>
+        </li>
+      {% endif %}
+      {% for item in paginate.paginator.page_range %}
+        {% if paginate.number == item %}
+        <li class="page-item active">
+          <a class="page-link" href="" tabindex="-1" aria-disabled="true">{{item}}</a>
+        </li>
+        {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{item}}">{{item}}</a></li>
+        {% endif %}
+      {% endfor %}
+      {% if paginate.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{paginate.next_page_number}}">Next</a>
+        </li>
+      {% else %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{paginate.paginator.num_pages}}">Last</a>
+        </li>
+      {% endif %}
+      <li class="page-item"><a class="page-link" href="#">Page {{paginate.number}} of {{paginate.paginator.num_pages}}</a></li>
+    </ul>
+  </nav>
+</section>
+{% endblock content %}
+{% block footer %} {% include "footer.html" %} {% endblock footer %}

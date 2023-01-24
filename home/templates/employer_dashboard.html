@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block content %}
+<!-- header -->
+<section class="job-head">
+    <div class="container home-section">
+            <div class="row">
+                <div class="col-md-7">
+                    <h1 class="text-white font-weight-bold">{{poster.company|title}} Dashboard</h1>
+                    <div class="custom-breadcrumbs">
+                    <a href="{% url 'home' %}">Home</a> <span class="mx-2 slash">/</span> 
+                    <span class="text-white"><strong>{{poster.company|title}} Dashboard</strong></span>
+                    </div>
+                </div>
+            </div>
+      </div>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand text-white" href="{% url 'home' %}">confidojobs</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav" >
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'home' %}">home<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'job_listing' %}">job listing</a>
+            </li>
+            {% if user.is_authenticated and user.is_staff %}
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'post_job' %}"><span class="post-job"><i class="fa-solid fa-plus"></i> post job</span></a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                profile
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="{% url 'employer_dashboard' %}">dashboard</a> 
+                <a class="dropdown-item" href="{% url 'update' %}">edit profile</a>
+              </div>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'signout' %}">logout</a>
+            </li>
+            {% elif user.is_authenticated %}
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'post_job' %}"><span class="post-job"><i class="fa-solid fa-plus"></i> post job</span></a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                profile
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="{% url 'employee_dashboard' %}">dashboard</a> 
+                <a class="dropdown-item" href="{% url 'update' %}">edit profile</a> 
+              </div>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'signout' %}">logout</a>
+            </li>
+            {% else %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                register
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="{% url 'employer_signup' %}">employer</a> 
+                <a class="dropdown-item" href="{% url 'employee_signup' %}">employee</a> 
+              </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'signin' %}">login</a> 
+          </li>
+            {% endif %}
+          </ul>
+        </div>
+      </nav>
+  </section>
+  {% include "message.html" %}
+  <!-- header done -->
+<div class="container">
+    <div class="jobpost-table">
+      <h5 class="card-header text-center">All Posted Jobs</h5>
+      <table class="table text-center mt-5">
+            <thead class="thead-dark">
+                <tr class="text-center">
+                    <th>Job Posted</th>
+                    <th>Date Posted</th>
+                    <th>Deadline</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            
+            {% if paginate %}
+              {% for item in paginate %}
+              <tbody>
+                <tr>
+                  <td><a href="{% url 'job_detail' item.id %}">{{item.job_title}}</a></td>
+                  <td>{{item.posted_at}}</td>
+                  <td>{{item.deadline}}</td>
+                  <td class="d-flex justify-content-center"><span>
+                    <form action="{% url 'applicant' %}" method="POST"> 
+                    {% csrf_token %}
+                      <button type="submit" class="btn btn-info btn-sm text-white">View</button>
+                      <input type="hidden" name="applicant" value="{{item.job_title}}">
+                    </form>
+                    <form action="{% url 'delete' %}" method="POST">
+                    {% csrf_token %}
+                      <button type="submit" class="btn btn-del btn-danger btn-sm text-white">Delete</button>
+                      <input type="hidden" name="post_id" value="{{item.id}}">
+                    </form>
+                  </td>
+                </tr> 
+              </tbody>
+              {% endfor %}
+            {% endif %}
+              
+      </table>
+      <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          {% if paginate.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{paginate.previous_page_number}}" tabindex="-1" aria-disabled="true">Previous</a>
+            </li>
+          {% else %}
+            <li class="page-item">
+              <a class="page-link" href="?page=1" tabindex="-1" aria-disabled="true">Previous</a>
+            </li>
+          {% endif %}
+          {% for item in paginate.paginator.page_range %}
+            {% if paginate.number == item %}
+            <li class="page-item active">
+              <a class="page-link" href="" tabindex="-1" aria-disabled="true">{{item}}</a>
+            </li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="?page={{item}}">{{item}}</a></li>
+            {% endif %}
+          {% endfor %}
+          {% if paginate.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{paginate.next_page_number}}">Next</a>
+            </li>
+          {% else %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{paginate.paginator.num_pages}}">Last</a>
+            </li>
+          {% endif %}
+          <li class="page-item"><a class="page-link" href="#">Page {{paginate.number}} of {{paginate.paginator.num_pages}}</a></li>
+        </ul>
+      </nav>
+    </div>
+</div>
+{% endblock content %}
+{% block footer %} {% include "footer.html" %} {% endblock footer %}

@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Job search section -->
+<section class="job-banner">
+    <div class="container">
+        <div class="row align-items-center justify-content-center">
+          <div class="col-md-12 mb-5 text-center job-search-text">
+            <h1 class="text-white font-weight-bold">the best place to find your dream job</h1>
+            <p class="text-white">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate est, consequuntur perferendis.</p>
+            <div class="job-sea">
+              <form class="form-inline" action="{% url 'search' %}" method="POST"> 
+                {% csrf_token %}
+                <input name="search" style="width: 80vh;" class="form-control mr-sm-2" type="search" placeholder="Job title" aria-label="Search">
+                <button style="width: 20vh;" class="btn btn-search btn-outline-success my-2 my-sm-0 ml-5 searchbtn" type="submit">Search</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+      <!-- header -->
+      <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand text-white" href="{% url 'home' %}">confidojobs</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav" >
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'home' %}">home<span class="sr-only">(current)</span></a> 
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'job_listing' %}">job listing</a> 
+            </li>
+            {% if user.is_authenticated and user.is_staff  %}
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'post_job' %}"><span class="post-job"><i class="fa-solid fa-plus"></i> post job</span></a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                profile
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="{% url 'employer_dashboard' %}">dashboard</a> 
+                <a class="dropdown-item" href="{% url 'update' %}">edit profile</a>
+              </div>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'signout' %}">logout</a>
+            </li>
+            {% elif user.is_authenticated %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                profile
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="{% url 'employee_dashboard' %}">dashboard</a> 
+                <a class="dropdown-item" href="{% url 'update' %}">edit profile</a>
+              </div>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'signout' %}">logout</a>
+            </li>
+            {% else %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                register
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="{% url 'employer_signup' %}">employer</a> 
+                <a class="dropdown-item" href="{% url 'employee_signup' %}">employee</a>
+              </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'signin' %}">login</a> 
+          </li>
+            {% endif %}
+          </ul>
+        </div>
+      </nav>
+      <!-- header done -->
+      </div>
+</section>
+{% include "message.html" %}
+<!-- Job search section done -->
+
+
+
+<!-- job listing section -->
+{% for item in featured %}
+<section class="job-list" id="jobs">
+    <a href="{% url 'job_detail' item.id %}">
+      <div class="job-card">
+        <div class="job-name">
+          <img src="{{item.logo.url}}" alt="" class="job-profile">
+          <div class="job-detail">
+            <h4>{{item.employer}}</h4>
+            <h3>{{item.job_title}}</h3>
+            <p>{{item.description}}</p>
+          </div>
+        </div>
+        <div class="job-label">
+          <a href="" class="label-a">HTML</a>
+          <a href="" class="label-b">CSS</a>
+          <a href="" class="label-c">Javascript</a>
+        </div>
+        <div class="job-posted">
+          {{item.posted_at}}
+        </div>
+      </div>
+    </a>
+    </div>
+  </section>
+{% endfor %}
+
+  <!-- job listing section done -->
+
+  <!-- sign up -->
+  <section class="footsign">
+    <div class="container">
+      <div class="row job-look">
+        <div class="col-md-8">
+          <h2 class="text-white">looking for a job?</h2>
+          <p class="text-white">Lorem ipsum dolor sit amet consectetur adipisicing elit tempora adipisci impedit.</p>
+        </div>
+        <div class="col-md-3 ml-auto">
+          <a href="{% url 'employee_signup' %}" class="btn btn-warning btn-block btn-lg">Sign Up</a> 
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- sign up done -->
+{% endblock content %}
+{% block footer %}{% include 'footer.html' %}{% endblock footer %}
